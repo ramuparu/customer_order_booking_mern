@@ -33,6 +33,45 @@ app.post('/book',async (req,res)=>{
             res.status(500).send('internal server error'))
 })
 
+app.get('/books', async (req,res)=>{
+    await bookModel.find().then(books=>{
+        if (books.length!==0){
+            res.json(books)
+        }else{
+            res.status(400).send('books not found')
+        }
+    }
+        ).catch(err=>{
+            res.status(500).send('internal server error')
+        })
+})
+
+app.get('/books/:id', async (req,res)=>{
+    await bookModel.findById(req.params.id).then(book=>{
+        if (book){
+            res.json(book)
+        }else{
+            res.status(400).send('book not found')
+        }
+    }
+        ).catch(err=>{
+            res.status(500).send('internal server error')
+        })
+})
+
+app.delete('/books/:id', async (req,res)=>{
+    await bookModel.findOneAndRemove(req.params.id).then(book=>{
+        if (book){
+            res.json('book deleted successfully')
+        }else{
+            res.status(400).send('book not found')
+        }
+    }
+        ).catch(err=>{
+            res.status(500).send('internal server error')
+        })
+})
+
 
 app.listen(PORT,()=>{
     console.log(`Server Running At ${PORT}`)
